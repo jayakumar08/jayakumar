@@ -1,0 +1,76 @@
+import requests
+
+def get_weather_data():
+    url = "https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid=b6907d289e10d714a6e88b30761fae22" # Replace with the actual API URL
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Failed to fetch weather data")
+        return None
+
+def temperature(date_time):
+    data_base = get_weather_data()
+    if data_base:
+        for entry_data in data_base['list']:
+            if entry_data ['dt_txt'] == date_time:
+                return entry_data ['main']['temp']
+    return None
+
+def wind_speed(date_time):
+    data_base = get_weather_data()
+    if data_base:
+        for entry_data  in data_base['list']:
+            if entry_data ['dt_txt'] == date_time:
+                return entry_data ['wind']['speed']
+    return None
+
+def pressure(date_time):
+    data_base = get_weather_data()
+    if data_base:
+        for entry_data in data_base['list']:
+            if entry_data['dt_txt'] == date_time:
+                return entry_data['main']['pressure']
+    return None
+
+def main():
+    while True:
+        print("1. Get weather")
+        print("2. Get Wind Speed")
+        print("3. Get Pressure")
+        print("0. Exit")
+        
+        choice = input("Enter your choice: ")
+        
+        if choice == '1':
+            date_time = input("Enter date and time (YYYY-MM-DD HH:MM:SS): ")
+            temperature_data = temperature(date_time)
+            if temperature_data is not None:
+                print(f"Temperature at {date_time}: {temperature_data} K")
+            else:
+                print("Weather data not available for the specified date and time")
+        
+        elif choice == '2':
+            date_time = input("Enter date and time (YYYY-MM-DD HH:MM:SS): ")
+            wind_speed_data = wind_speed(date_time)
+            if wind_speed_data is not None:
+                print(f"Wind Speed at {date_time}: {wind_speed_data} m/s")
+            else:
+                print("Weather data not available for the specified date and time")
+        
+        elif choice == '3':
+            date_time = input("Enter date and time (YYYY-MM-DD HH:MM:SS): ")
+            pressure_data = pressure(date_time)
+            if pressure_data is not None:
+                print(f"Pressure at {date_time}: {pressure_data} hPa")
+            else:
+                print("Weather data not available for the specified date and time")
+        
+        elif choice == '0':
+            break
+        
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
